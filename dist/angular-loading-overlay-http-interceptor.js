@@ -56,12 +56,14 @@
 
 	"use strict";
 	var BsLoadingOverlayHttpInterceptorInterceptor_1 = __webpack_require__(2);
-	var bsLoadingOverlayHttpInterceptorFactoryFactory = function (bsLoadingOverlayService) {
+    var bsLoadingOverlayHttpInterceptorFactoryFactory = function($q, bsLoadingOverlayService) {
 	    return function (config) {
-	        return new BsLoadingOverlayHttpInterceptorInterceptor_1.default(config, bsLoadingOverlayService);
+            return new BsLoadingOverlayHttpInterceptorInterceptor_1.default(config, $q, bsLoadingOverlayService);
 	    };
 	};
-	bsLoadingOverlayHttpInterceptorFactoryFactory.$inject = ['bsLoadingOverlayService'];
+    bsLoadingOverlayHttpInterceptorFactoryFactory.$inject = [
+        '$q',
+        'bsLoadingOverlayService'];
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = bsLoadingOverlayHttpInterceptorFactoryFactory;
 
@@ -71,11 +73,11 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	var BsLoadingOverlayHttpInterceptorInterceptor = (function () {
-	    function BsLoadingOverlayHttpInterceptorInterceptor(config, bsLoadingOverlayService) {
+	var BsLoadingOverlayHttpInterceptorInterceptor = (function() {
+	    function BsLoadingOverlayHttpInterceptorInterceptor(config, $q, bsLoadingOverlayService) {
 	        var _this = this;
 	        if (config === void 0) { config = {}; }
-	        this.config = config;
+            this.config = config;
 	        this.bsLoadingOverlayService = bsLoadingOverlayService;
 	        this.requestsCount = 0;
 	        this.request = function (requestConfig) {
@@ -91,7 +93,7 @@
 	        };
 	        this.requestError = function (rejection) {
 	            _this.onResponse();
-	            return rejection;
+                return $q.reject(rejection);
 	        };
 	        this.response = function (response) {
 	            _this.onResponse();
@@ -99,7 +101,7 @@
 	        };
 	        this.responseError = function (rejection) {
 	            _this.onResponse();
-	            return rejection;
+                return $q.reject(rejection);
 	        };
 	    }
 	    BsLoadingOverlayHttpInterceptorInterceptor.prototype.onRequest = function () {
